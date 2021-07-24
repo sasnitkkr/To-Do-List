@@ -1,0 +1,93 @@
+
+module.exports = function()
+{
+    const date = new Date();
+    const options = {
+        weekday : "long",
+        month: "long",
+        day: "numeric"
+    }
+    var today = date.toLocaleDateString('en-US', options);
+    return today;
+};
+
+module.exports = function(){
+    const date = new Date();
+    const options = {
+        weekday : "long",
+    }
+    var today = date.toLocaleDateString('en-US', options);
+    return today;
+};
+
+const date = new Date();
+    const options = {
+        weekday : "long",
+        month: "long",
+        day: "numeric"
+    }
+    var today = date.toLocaleDateString('en-US', options);
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To Do List</title>
+</head>
+<body>
+    <h1><%= kindOfDay %> </h1>
+    <ul>
+        <li>Buy Food</li>
+        <li>Cook Food</li>
+        <li>Eat Food</li>
+        <% for(let i=0; i<kindOfItem.length; i++){ %>
+            <li>
+                 <%= kindOfItem[i] %> <!-- = for value -->
+            </li>
+        <% } %>
+    </ul>
+    <form action="/" method="POST">
+        <input type="text" name="newItem">
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>
+
+const express = require("express");
+const bodyParser = require("body-parser");
+const { urlencoded } = require("body-parser");
+const PORT = 3000;
+
+const app = express();
+
+var items=[];
+
+app.set('view engine', 'ejs');
+app.use(bodyParser.urlencoded({extended:true}));
+
+app.get("/", (req, res)=>{
+    const dateObject = new Date();
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleDateString
+    let options = {
+        weekday: "long",
+        month: "long",
+        day: "numeric"
+    }
+    let dateString = dateObject.toLocaleDateString('en-US', options);
+    res.render('list', {kindOfDay : dateString, kindOfItem : items});
+})
+
+app.post("/", (req, res)=>{
+        
+    let item = req.body.newItem;
+    //res.render('list', {kindOfItem : data}); we need to render everything
+    //console.log("ojnf"+data);
+    items.push(item);
+    res.redirect("/");
+
+})
+
+app.listen(PORT, () =>{
+    console.log("Server started at port "+ PORT);
+})
