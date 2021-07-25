@@ -13,18 +13,19 @@
     </div>
     
     <div class="box">
+        <form action="/delete" method="POST">
             <% newItems.forEach((item)=>{ %>
                 <div class="item">
-                    <input type="checkbox">
+                    <input type="checkbox" name="checkbox" value = <%= item._id %> onchange="this.form.submit()">
                     <p> <%= item.name %>  </p>
                 </div>
             <% }) %>
+        </form>
         <form class="item" action="/" method="POST">
-            <input type="text" placeholder="New Item" Item" name="newItem" autocomplete="off">
+            <input type="text" placeholder="New Item"  name="newItem" autocomplete="off">
             <button type="submit" name="submitButton" value="<%= listTitle %>">+</button>
         </form>
-    </div>
-    
+    </div>    
     
 </body>
 </html>
