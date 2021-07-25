@@ -7,6 +7,7 @@ const app = express();
 // let homeList = [];
 // let workList = [];
 const mongoose = require("mongoose");
+const { addListener } = require('nodemon');
 mongoose.connect('mongodb://localhost:27017/todolistDB', {useNewUrlParser: true, useUnifiedTopology: true});
 
 
@@ -30,6 +31,12 @@ const default2 = new homeItem({name : "Hit the + button to add new item"});
 const default3 = new homeItem({name : "<-- hit this to delete the item"});
 const defArr = [default1, default2, default3];
 
+const ListSchema = new mongoose.Schema({
+    name : String,
+    items : [itemsSchema]
+});
+
+const List = mongoose.model('List', ListSchema);
 
 app.get("/", (req, res) => {
     // get today's date string
@@ -64,9 +71,9 @@ app.get("/", (req, res) => {
 
 });
 
-app.get("/work", (req, res) =>{
-    res.render('list', {listTitle:"Work", newItems: workList})
-})
+// app.get("/work", (req, res) =>{
+//     res.render('list', {listTitle:"Work", newItems: workList})
+// })
 
 app.post("/", (req, res)=>{
 
@@ -100,6 +107,34 @@ app.post("/delete", (req, res)=>{
     });
     res.redirect("/");
 });
+
+
+app.get("/:customListName", (req, res)=>{
+    // res.send(req.params.customListName);
+    const customListName = req.params.customListName;
+
+    List.findOne({name : customListName}, (err, foundList)=>{
+        if(err){
+            console.log(err);
+        }else{
+            if(!foundList){
+                // If List is Not Found Create List
+                const list = new List({
+                    name : customListName,
+                    items : defArr
+                });
+                
+                list.save();
+                res.redirect("/"+customListName);      
+            }else{
+                // Display List is Already Present
+                res.render("list",{listTitle: foundList.name, newItems : foundList.items});
+            }
+        }
+    });
+});
+
+// app.post("/:customListName/post")
 
 app.listen(PORT,()=>{
     console.log("Server started at port "+PORT);
