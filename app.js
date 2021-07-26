@@ -10,6 +10,7 @@ const mongoose = require("mongoose");
 const { addListener } = require('nodemon');
 mongoose.connect('mongodb://localhost:27017/todolistDB', {useNewUrlParser: true, useUnifiedTopology: true});
 
+const _ = require("lodash");
 
 app.set('view engine', 'ejs');
 // Body Parser - Express v4.16.0 and higher
@@ -134,7 +135,6 @@ app.post("/delete", (req, res)=>{
         
     }
     
-    // res.redirect("/"+customListName);
 });
 
 
@@ -142,7 +142,7 @@ app.get("/:customListName", (req, res)=>{
     
     console.log("---------Inside Dynamic Route----------------");
 
-    const customListName = req.params.customListName;
+    const customListName = _.capitalize(req.params.customListName);
 
     List.findOne({name : customListName}, (err, foundList)=>{
         if(err){
