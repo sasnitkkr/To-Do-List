@@ -64,7 +64,7 @@ app.get("/", (req, res) => {
                 res.redirect("/");
             }
             else{
-                res.render('list', {listTitle : today, newItems: docs});
+                res.render('list', {listTitle : "Today", newItems: docs});
             }
         }
     });
@@ -77,27 +77,42 @@ app.get("/", (req, res) => {
 
 app.post("/", (req, res)=>{
 
-    let listPlace = req.body.submitButton;
-    let itemName = req.body.newItem;
-    console.log(listPlace);
-    if(listPlace === "Work")
-    {
-        workList.push(item);
-        res.redirect("/work");
-    }
-    else
+    const newItemName = req.body.newItemName; // from Input
+    const listTitle = req.body.listTitle; //from submit button
+
+    const newItem = new homeItem({
+        name : newItemName
+    });
+    console.log("Post Request Made");
+    console.log(newItem);
+
+    if(listTitle === "Today")
     {   
-        const newItem = new homeItem({
-            name : itemName
-        });
         newItem.save(); 
         res.redirect("/");
+    }
+    else
+    {
+        // Insert newItem in Our Custom List
+        List.findOne({name: listTitle}, (err, foundList)=>{
+            if(err){
+                console.log(err);
+            }else{
+                // Insert item in the foundList
+                console.log(foundList);
+                foundList.items.push(newItem);
+                foundList.save();//save doc in collection
+                res.redirect("/"+listTitle);
+            }
+        })    
     }
 });
 
 app.post("/delete", (req, res)=>{
     // console.log(req.body.checkbox);
     const checkedItemId = req.body.checkbox;
+    //List ke array se ek delete karna h
+    // 
     homeItem.deleteOne({_id : checkedItemId}, (err)=>{
         if(err){
             console.log(err);
@@ -106,19 +121,25 @@ app.post("/delete", (req, res)=>{
         }   
     });
     res.redirect("/");
+    // res.redirect("/"+customListName);
 });
 
 
 app.get("/:customListName", (req, res)=>{
-    // res.send(req.params.customListName);
+    
+    console.log("---------Inside Dynamic Route----------------");
+
     const customListName = req.params.customListName;
 
     List.findOne({name : customListName}, (err, foundList)=>{
         if(err){
+            console.log("-----Error-----")
             console.log(err);
         }else{
             if(!foundList){
                 // If List is Not Found Create List
+                console.log("--------List Not Found----------");
+                console.log("--------Creating List-----------");
                 const list = new List({
                     name : customListName,
                     items : defArr
@@ -127,6 +148,8 @@ app.get("/:customListName", (req, res)=>{
                 list.save();
                 res.redirect("/"+customListName);      
             }else{
+                console.log("---------List Already Present----------");
+                console.log("----------Displaying List-----------");
                 // Display List is Already Present
                 res.render("list",{listTitle: foundList.name, newItems : foundList.items});
             }
