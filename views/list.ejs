@@ -20,6 +20,7 @@
                     <p> <%= item.name %>  </p>
                 </div>
             <% }) %>
+            <input type="hidden" name="listTitle" value="<%= listTitle %>">
         </form>
         <form class="item" action="/" method="POST">
             <input type="text" placeholder="New Item"  name="newItemName" autocomplete="off">

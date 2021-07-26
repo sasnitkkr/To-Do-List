@@ -3,6 +3,10 @@ ADDING DATABASE
 1. install mongoose
     npm i mongoose
 
+ERRORS ENCOUNTERED
+1. shared cluster
+    remove v/s deleteMany()
+    
 
 module.exports = function()
 {

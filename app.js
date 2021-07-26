@@ -71,10 +71,6 @@ app.get("/", (req, res) => {
 
 });
 
-// app.get("/work", (req, res) =>{
-//     res.render('list', {listTitle:"Work", newItems: workList})
-// })
-
 app.post("/", (req, res)=>{
 
     const newItemName = req.body.newItemName; // from Input
@@ -111,16 +107,33 @@ app.post("/", (req, res)=>{
 app.post("/delete", (req, res)=>{
     // console.log(req.body.checkbox);
     const checkedItemId = req.body.checkbox;
-    //List ke array se ek delete karna h
-    // 
-    homeItem.deleteOne({_id : checkedItemId}, (err)=>{
-        if(err){
-            console.log(err);
-        }else{
-            console.log("deleted one item successfully");
-        }   
-    });
-    res.redirect("/");
+    const listTitle = req.body.listTitle;
+
+    if(listTitle === "Today")
+    {
+        homeItem.deleteOne({_id : checkedItemId}, (err)=>{
+            if(err){
+                console.log(err);
+            }else{
+                console.log("deleted one item successfully");
+            }   
+        });
+        res.redirect("/");
+    }
+    else
+    {
+        // https://stackoverflow.com/questions/14763721/mongoose-delete-array-element-in-document-and-save/27917378
+        // Codition : which list, What Update, Callback
+        List.findOneAndUpdate({name : listTitle},{$pull:{items:{_id: checkedItemId}}},(err, foundList)=>{
+            if(err){
+                console.log(err);
+            }else{
+                res.redirect("/"+listTitle);
+            }
+        });
+        
+    }
+    
     // res.redirect("/"+customListName);
 });
 
