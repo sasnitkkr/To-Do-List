@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const date = require(__dirname+"/date.js");
 console.log(date);
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 const app = express();
 // let homeList = [];
 // let workList = [];
@@ -173,5 +173,5 @@ app.get("/:customListName", (req, res)=>{
 // app.post("/:customListName/post")
 
 app.listen(PORT,()=>{
-    console.log("Server started at port "+PORT);
+    console.log("Server has started at port successfully");
 })
