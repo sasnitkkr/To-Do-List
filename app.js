@@ -8,7 +8,7 @@ const app = express();
 // let workList = [];
 const mongoose = require("mongoose");
 const { addListener } = require('nodemon');
-mongoose.connect('mongodb://localhost:27017/todolistDB', {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect('mongodb+srv://admin-sahil:Sahil@2001@cluster0.tyon0.mongodb.net/todolistDB', {useNewUrlParser: true, useUnifiedTopology: true});
 
 const _ = require("lodash");
 
