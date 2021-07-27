@@ -7,6 +7,7 @@ ERRORS ENCOUNTERED
 1. shared cluster
     remove v/s deleteMany()
     
+// "test": "echo \"Error: no test specified\" && exit 1"
 
 module.exports = function()
 {
